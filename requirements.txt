@@ -1,4 +1,4 @@
-vame-py>=0.14.0
+vame-py @ git+https://github.com/EthoML/VAME.git@dev
 movement>=0.16.0
 pynwb>=3.0.0
 ndx-pose==0.2.2

@@ -1,22 +1,21 @@
-FROM nvidia/cuda:12.4.1-cudnn-runtime-ubuntu22.04
+FROM nvidia/cuda:12.6.3-cudnn-runtime-ubuntu24.04
 
 ENV DEBIAN_FRONTEND=noninteractive \
-    PYTHONUNBUFFERED=1
+    PYTHONUNBUFFERED=1 \
+    PATH="/opt/venv/bin:${PATH}"
 
 RUN apt-get update && apt-get install -y --no-install-recommends \
-        python3.11 \
-        python3-pip \
-        python3.11-venv \
+        python3 \
+        python3-venv \
         git \
         ffmpeg \
     && rm -rf /var/lib/apt/lists/*
 
-RUN ln -sf /usr/bin/python3.11 /usr/bin/python3 && \
-    ln -sf /usr/bin/python3 /usr/bin/python
+RUN python3 -m venv /opt/venv && \
+    /opt/venv/bin/pip install --no-cache-dir --upgrade pip
 
 COPY requirements.txt /tmp/requirements.txt
-RUN python -m pip install --no-cache-dir --upgrade pip && \
-    python -m pip install --no-cache-dir -r /tmp/requirements.txt && \
+RUN pip install --no-cache-dir -r /tmp/requirements.txt && \
     rm /tmp/requirements.txt
 
 # Required for Singularity compatibility on Brainlife HPC resources
