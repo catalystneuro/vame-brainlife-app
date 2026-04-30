@@ -10,15 +10,6 @@ A Brainlife app that runs the [VAME](https://github.com/EthoML/VAME) pipeline on
 4. Generates figures (preprocessing, model losses, UMAP) with `show_figure=False`/`"none"` and `save_to_file=True`.
 5. Writes the VAME project tree to `output/<project_name>/` and a summary to `product.json`.
 
-## Local testing
-
-```bash
-# edit config.json: set "nwb" to a list of absolute paths to local NWB files,
-# drop max_epochs/n_clusters for a smoke test
-cp config.json.sample config.json
-pip install -r requirements.txt
-./main
-```
 
 ## Brainlife registration
 
