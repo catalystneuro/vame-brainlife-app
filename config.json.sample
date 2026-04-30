@@ -1,0 +1,22 @@
+{
+    "nwb": [
+        "test_assets/session1.nwb",
+        "test_assets/session2.nwb",
+        "test_assets/session3.nwb",
+        "test_assets/session4.nwb"
+    ],
+    "project_name": "vame_project",
+    "processing_module_key": "behavior",
+    "pose_estimation_key": "PoseEstimation",
+    "n_clusters": 15,
+    "max_epochs": 10,
+    "segmentation_algorithm": "hmm",
+    "pose_confidence": 0.9,
+    "centered_reference_keypoint": "Nose",
+    "orientation_reference_keypoint": "Tailroot",
+    "run_lowconf_cleaning": true,
+    "run_egocentric_alignment": true,
+    "run_outlier_cleaning": true,
+    "run_savgol_filtering": true,
+    "run_rescaling": true
+}

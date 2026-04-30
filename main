@@ -1,0 +1,10 @@
+#!/usr/bin/env bash
+set -euo pipefail
+
+if command -v singularity &> /dev/null; then
+    unset SINGULARITY_DOCKER_USERNAME SINGULARITY_DOCKER_PASSWORD
+    unset APPTAINER_DOCKER_USERNAME APPTAINER_DOCKER_PASSWORD
+    singularity exec --nv docker://ghcr.io/catalystneuro/vame-brainlife-app:latest python3 app.py
+else
+    python3 app.py
+fi
