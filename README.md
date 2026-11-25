@@ -1,4 +1,15 @@
-# VAME Brainlife App
+<h1 align="center">VAME Pipeline</h1>
+
+<p align="center">
+  Runs the VAME (Variational Animal Motion Embedding) pipeline on NWB files with pose-estimation data to learn behavioral motifs, and outputs the VAME project with segmentations and figures.
+</p>
+
+<p align="center">
+  <a href="https://github.com/brainlife/abcd-spec"><img src="https://img.shields.io/badge/ABCD_Spec-v1.1-green.svg" alt="ABCD Spec v1.1"></a>
+  <a href="https://doi.org/10.25663/brainlife.app.927"><img src="https://img.shields.io/badge/Brainlife-brainlife.app.927-blue.svg" alt="Run on brainlife.io"></a>
+</p>
+
+## At a glance
 
 <!-- brainlife-app:begin (generated from the App manifest; edit the manifest, not this block) -->
 
@@ -8,25 +19,25 @@ Loads pose data from each NWB file's behavior processing module, preprocesses it
 
 | | |
 |---|---|
-| 📥 **Inputs** | `neuro/nwb` |
-| 📤 **Outputs** | `raw` |
-| 🐳 **Container** | `ghcr.io/catalystneuro/vame-brainlife-app:latest` |
-| 🔗 **Run it** | [doi.org/10.25663/brainlife.app.927](https://doi.org/10.25663/brainlife.app.927) |
+| **Inputs** | `neuro/nwb` |
+| **Outputs** | `raw` |
+| **Container** | `ghcr.io/catalystneuro/vame-brainlife-app:latest` |
+| **Run it** | [doi.org/10.25663/brainlife.app.927](https://doi.org/10.25663/brainlife.app.927) |
 
-#### 📥 Inputs
+#### Inputs
 
 | Input | Datatype | Required | Description |
 |---|---|---|---|
 | `nwb` | `neuro/nwb` | yes | NWB files (multi), one per session, containing pose-estimation data. Pose data must be stored as ndx-pose PoseEstimation in the behavior processing module. |
 
-#### 📤 Outputs
+#### Outputs
 
 | Output | Datatype | Description |
 |---|---|---|
 | `output` | `raw` | VAME project directory (output/<project_name>/) with preprocessing results, trained model, segmentations, community clustering and figures. |
 
 <details>
-<summary><b>⚙️ Parameters</b> (14)</summary>
+<summary><b>Parameters</b> (14)</summary>
 
 | Parameter | Type | Default | Description |
 |---|---|---|---|
@@ -49,7 +60,40 @@ Loads pose data from each NWB file's behavior processing module, preprocesses it
 
 <!-- brainlife-app:end -->
 
-A Brainlife app that runs the [VAME](https://github.com/EthoML/VAME) pipeline on a list of NWB files containing pose-estimation data. Input is delivered via Brainlife's `neuro/nwb` datatype.
+## Running the App
+
+### On brainlife.io
+
+Open the App at [doi.org/10.25663/brainlife.app.927](https://doi.org/10.25663/brainlife.app.927), choose `neuro/nwb` from your project, set the parameters and press **Execute**. The results are saved to your project as `raw`.
+
+### Locally
+
+You need [Singularity/Apptainer](https://apptainer.org/) (the App runs in `ghcr.io/catalystneuro/vame-brainlife-app:latest`), [`jq`](https://jqlang.github.io/jq/).
+
+1. Clone this repository.
+2. Create `config.json` with the paths to your inputs and the parameters:
+
+   ```json
+   {
+       "nwb": "/path/to/nwb/nwb",
+       "project_name": "vame_project",
+       "n_clusters": 15,
+       "max_epochs": 10,
+       "segmentation_algorithm": "hmm",
+       "pose_confidence": 0.9,
+       "processing_module_key": "behavior",
+       "pose_estimation_key": "PoseEstimation",
+       "centered_reference_keypoint": "",
+       "orientation_reference_keypoint": "",
+       "run_lowconf_cleaning": true,
+       "run_egocentric_alignment": true,
+       "run_outlier_cleaning": true,
+       "run_savgol_filtering": true,
+       "run_rescaling": true
+   }
+   ```
+
+3. Run `./main`.
 
 ## How it works
 
@@ -59,24 +103,14 @@ A Brainlife app that runs the [VAME](https://github.com/EthoML/VAME) pipeline on
 4. Generates figures (preprocessing, model losses, UMAP) with `show_figure=False`/`"none"` and `save_to_file=True`.
 5. Writes the VAME project tree to `output/<project_name>/` and a summary to `product.json`.
 
+## Citing
 
-## Brainlife registration
+If you use this App, please cite it, the software it builds on and brainlife.io:
 
-- **Input datatype**: [`neuro/nwb`](https://brainlife.io/datatype/69f24b375e3b9b921dc25e49) — file `data.nwb` mapped to key `nwb`.
-- **Config params**:
-  - `project_name` (string) — VAME project directory name
-  - `n_clusters` (int) — number of motifs/states
-  - `max_epochs` (int) — VAE training epochs
-  - `segmentation_algorithm` (enum: `"hmm"` | `"kmeans"`) — segmentation algorithm
-  - `pose_confidence` (float) — confidence threshold for pose filtering
-  - `processing_module_key` (string, default `"behavior"`) — NWB processing module containing pose data
-  - `pose_estimation_key` (string, default `"PoseEstimation"`) — `ndx_pose.PoseEstimation` container name
-  - `centered_reference_keypoint` (string or null) — keypoint name for egocentric centering (VAME default: `"snout"`)
-  - `orientation_reference_keypoint` (string or null) — keypoint name for egocentric orientation (VAME default: `"tailbase"`)
-  - `run_lowconf_cleaning` (bool) — drop low-confidence frames during preprocessing
-  - `run_egocentric_alignment` (bool) — align poses egocentrically (uses centered + orientation keypoints)
-  - `run_outlier_cleaning` (bool) — clean outlier keypoints
-  - `run_savgol_filtering` (bool) — apply Savitzky-Golay smoothing
-  - `run_rescaling` (bool) — rescale poses (default `false`)
-- **Output**: `raw` datatype, output directory `output/<project_name>/`.
-- **Resources**: GPU required.
+- VAME Pipeline. brainlife.io App. [doi:10.25663/brainlife.app.927](https://doi.org/10.25663/brainlife.app.927)
+- Hayashi S, Caron BA, Heinsfeld AS, et al. brainlife.io: a decentralized and open-source cloud platform to support neuroscience research. *Nature Methods* 21:809–813 (2024). [doi:10.1038/s41592-024-02237-2](https://doi.org/10.1038/s41592-024-02237-2)
+- Avesani P, McPherson B, Hayashi S, et al. The open diffusion data derivatives, brain data upcycling via integrated publishing of derivatives and reproducible open cloud services. *Scientific Data* 6:69 (2019). [doi:10.1038/s41597-019-0073-y](https://doi.org/10.1038/s41597-019-0073-y)
+
+## Authors
+
+Maintained by [@catalystneuro](https://github.com/catalystneuro).
